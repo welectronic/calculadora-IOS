@@ -1,0 +1,83 @@
+:root {
+    --background-color: #000;
+    --display-bg-color: #333;
+    --display-text-color: #fff;
+    --button-bg-color: #505050;
+    --button-text-color: #fff;
+    --button-special-bg-color: #a5a5a5;
+    --button-special-text-color: #000;
+    --button-operation-bg-color: #f1a33b;
+    --button-operation-text-color: #fff;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background-color);
+    margin: 0;
+    font-family: 'Helvetica nue', sans-serif;
+}
+
+#calculator {
+    width: 340px;
+    background-color: var(--background-color);
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.display {
+    background-color: var(--display-bg-color);
+    color: var(--display-text-color);
+    font-size: 2.5em;
+    text-align: right;
+    padding: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+}
+
+.button {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    font-size: 1.5em;
+    padding: 20px 0px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 70px;
+    margin: 8px;
+}
+
+.button.operation {
+    background-color: var(--button-operation-bg-color);
+    color: var(--button-operation-text-color);
+}
+
+.button.special {
+    background-color: var(--button-special-bg-color);
+    color: var(--button-special-text-color);
+}
+
+.button.zero {
+    grid-column: span 2;
+    width:150px;
+    border-radius: 40px;
+    text-align: left;
+    padding-left: 30px;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+.button:active {
+    opacity: 0.6;
+}
