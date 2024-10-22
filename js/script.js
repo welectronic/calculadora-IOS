@@ -2,9 +2,17 @@ class Display {
     constructor() {
         this.displayElement = document.getElementById('display');
         this.currentvalue = '0';
+        this.maxLength = 13; 
     }
 
     update(value) {
+        
+        if (value.includes('.') && value.length > this.maxLength) {
+            value = parseFloat(value).toPrecision(this.maxLength - 1); 
+        } else if (value.length > this.maxLength) {
+            value = value.slice(0, this.maxLength); 
+        }
+
         this.currentvalue = value;
         this.render();
     }
@@ -19,15 +27,22 @@ class Display {
     }
 
     append(value) {
-        if (this.currentvalue === '0') {
-            this.currentvalue = value
-        } else {
-            this.currentvalue = this.currentvalue + value;
+        
+        if (this.currentvalue.length >= this.maxLength) {
+            return;
         }
+        
+        if (this.currentvalue === '0' && value !== '.') {
+            this.currentvalue = value;
+        } else {
+            this.currentvalue += value;
+        }
+
         this.render();
     }
-
 }
+
+
 
 class Button {
     constructor(element, action) {
@@ -46,7 +61,6 @@ class Button {
         this.action();
     }
 }
-
 
 class Calculator {
     constructor(display) {
@@ -83,21 +97,38 @@ class Calculator {
             case '=':
                 this.calculate();
                 break;
+            case '.':
+                this.handleDecimalPoint();
+                break;
             default:
-                this.handleInput(value);
+                this.handleNumberInput(value);
                 break;
         }
     }
 
-    handleInput(value) {
+    handleNumberInput(value) {
+
+        if (this.display.currentvalue === 'Error') {
+            this.clear();
+        }
+
         if (this.isNewInput) {
-            this.display.update(value)
+            this.display.update(value);
             this.isNewInput = false;
         } else {
-            if (this.display.currentvalue === '0' && value === '0') {
-                return;
+            if (this.display.currentvalue !== '0' || value !== '0') {
+                this.display.append(value);
             }
-            this.display.append(value);
+        }
+    }
+
+    handleDecimalPoint() {
+        if (this.display.currentvalue === 'Error') {
+            this.clear();
+        }
+        if (!this.display.currentvalue.includes('.')) {
+            this.display.append('.');
+            this.isNewInput = false;
         }
     }
 
@@ -110,24 +141,26 @@ class Calculator {
     }
 
     toggleSign() {
-        let currenValue = parseFloat(this.display.currentvalue);
-        currenValue = -currenValue;
-        this.display.update(currenValue.toString());
+        if (this.display.currentvalue === 'Error') return;
+        let currentValue = parseFloat(this.display.currentvalue);
+        currentValue = -currentValue;
+        this.display.update(currentValue.toString());
     }
 
     percent() {
-        let currenValue = parseFloat(this.display.currentvalue);
-        currenValue = currenValue / 100;
-        this.display.update(currenValue.toString());
+        if (this.display.currentvalue === 'Error') return;
+        let currentValue = parseFloat(this.display.currentvalue);
+        currentValue = currentValue / 100;
+        this.display.update(currentValue.toString());
     }
 
     setOperation(operation) {
+        if (this.display.currentvalue === 'Error') return;
         if (this.currentOperation) {
-            this.calculate()
+            this.calculate();
         }
         this.value1 = parseFloat(this.display.currentvalue);
         this.currentOperation = operation;
-        this.display.clear();
         this.isNewInput = true;
     }
 
@@ -138,14 +171,14 @@ class Calculator {
         this.value2 = parseFloat(this.display.currentvalue);
 
         let result;
-
         try {
-            result = this.currentOperation.execute(this.value1, this.value2)
+            result = this.currentOperation.execute(this.value1, this.value2);
         } catch (error) {
-            return 'Error';
+            this.display.update('Error');
+            return;
         }
 
-        this.display.update(result.toString())
+        this.display.update(result.toString());
         this.value1 = result;
         this.currentOperation = null;
         this.value2 = null;
@@ -153,16 +186,16 @@ class Calculator {
     }
 }
 
-// interface operation
+
 class Operation {
     constructor() {
         if (this.constructor === Operation) {
-            throw new Error(" no se puede instanciar la clase abrtracta operation")
+            throw new Error("No se puede instanciar la clase abstracta Operation");
         }
     }
 
     execute(value1, value2) {
-        throw new Error("Método abstracto execute() debe ser implementado")
+        throw new Error("Método abstracto execute() debe ser implementado");
     }
 }
 
