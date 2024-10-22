@@ -54,6 +54,7 @@ class Calculator {
         this.currentOperation =null;
         this.value1 = null;
         this.value2 = null;
+        this.isNewInput = true;
     }
 
     pressButton(value) {
@@ -83,8 +84,17 @@ class Calculator {
                 this.calculate();
                 break;
             default:
-                this.display.append(value);
+                this.handleInput(value);
                 break;
+        }
+    }
+
+    handleInput(value) {
+        if(this.isNewInput){
+            this.display.update(value)
+            this.isNewInput = false;
+        } else {
+            this.display.append(value);
         }
     }
 
@@ -96,11 +106,15 @@ class Calculator {
     }
 
     toggleSign(){
-
+        let currenValue = parseFloat(this.display.currentvalue);
+        currenValue = -currenValue;
+        this.display.update(currenValue.toString());
     }
 
     percent(){
-
+        let currenValue = parseFloat(this.display.currentvalue);
+        currenValue = currenValue/100;
+        this.display.update(currenValue.toString());
     }
 
     setOperation(operation) {
@@ -111,4 +125,76 @@ class Calculator {
         this.currentOperation =operation;
         this.display.clear();
     }
+
+    calculate(){
+        if(!this.currentOperation || this.value1 === null){
+            return;
+        }
+        this.value2 = parseFloat(this.display.currentvalue);
+
+        let result;
+
+        try {
+            result = this.currentOperation.execute(this.value1, this.value2)
+        } catch (error) {
+            return 'Error';
+        }
+
+        this.display.update(result.toString())
+        this.value1 =  result;
+        this.currentOperation = null;
+        this.value2 = null;
+        this.isNewInput = true;
+    }
 }
+
+// interface operation
+class Operation {
+    constructor(){
+        if (this.constructor === Operation) {
+            throw new Error (" no se puede instanciar la clase abrtracta operation")
+        }
+    }
+
+    execute (value1,value2) {
+        throw new Error ("Método abstracto execute() debe ser implementado")
+    }
+}
+
+class Addition extends Operation {
+    execute(value1,value2){
+        return value1+value2;
+    }
+}
+
+class Substraction extends Operation {
+    execute(value1,value2){
+        return value1-value2;
+    }
+}
+
+class Multiplication extends Operation {
+    execute(value1,value2){
+        return value1*value2;
+    }
+}
+
+class Division extends Operation {
+    execute(value1,value2){
+        if(value2 === 0){
+            throw new Error("División por 0 no está permitida");
+        }
+        return value1/value2;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const calculatorInstance = new Calculator( new Display());
+
+    const buttonElements = document.querySelectorAll('.button');
+
+    buttonElements.forEach( buttonElement => {
+        const value = buttonElement.getAttribute('data-value');
+        new Button(buttonElement, ()=>calculatorInstance.pressButton(value));
+    });
+});
