@@ -51,19 +51,28 @@ class Calculator {
         this.isNewInput = true;
     }
 
+    operationsMap = {
+        'AC': () => this.clear(),
+        '±': () => this.toggleSign(),
+        '%': () => this.percent(),
+        '+': () => this.setOperation(new Operations['+']()),
+        '-': () => this.setOperation(new Operations['-']()),
+        'X': () => this.setOperation(new Operations['X']()),
+        '÷': () => this.setOperation(new Operations['÷']()),
+        '=': () => this.calculate(),
+        '.': () => this.handleDecimalPoint()
+    };
+    
     pressButton(value) {
-        if (value === 'AC') return this.clear();
         if (this.display.currentvalue === 'Error') this.clear();
-
-        switch (value) {
-            case '±': return this.toggleSign();
-            case '%': return this.percent();
-            case '+': case '-': case 'X': case '÷': return this.setOperation(new Operations[value]());
-            case '=': return this.calculate();
-            case '.': return this.handleDecimalPoint();
-            default: return this.handleNumberInput(value);
-        }
+    
+        const operation = this.operationsMap[value];
+        if (operation) return operation();
+    
+        return this.handleNumberInput(value);
     }
+    
+    
 
     handleNumberInput(value) {
         if (this.isNewInput) {
@@ -108,20 +117,28 @@ class Calculator {
 
     calculate() {
         if (!this.currentOperation || this.value1 === null) return;
-
+    
         this.value2 = parseFloat(this.display.currentvalue);
-        try {
-            const result = this.currentOperation.execute(this.value1, this.value2);
-            this.display.update(result.toString());
-            this.value1 = result;
-        } catch (error) {
-            this.display.update('Error');
-        }
-
+    
+        const result = this.tryExecuteOperation();
+        this.display.update(result.toString());
+    
+        if (result !== 'Error') this.value1 = result;
+    
         this.currentOperation = null;
         this.value2 = null;
         this.isNewInput = true;
     }
+    
+    // Función auxiliar para ejecutar la operación con manejo de errores
+    tryExecuteOperation() {
+        try {
+            return this.currentOperation.execute(this.value1, this.value2);
+        } catch (error) {
+            return 'Error';
+        }
+    }
+    
 }
 
 class Operation {
@@ -169,4 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const value = buttonElement.getAttribute('data-value');
         new Button(buttonElement, () => calculatorInstance.pressButton(value));
     });
+    console.log('¡Bienvenido a la calculadora!');
 });
+
+
