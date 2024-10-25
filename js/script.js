@@ -42,6 +42,44 @@ class Button {
     }
 }
 
+class Operation {
+    execute(value1, value2) {
+        throw new Error("Método abstracto execute() debe ser implementado");
+    }
+}
+
+class Addition extends Operation {
+    execute(value1, value2) {
+        return value1 + value2;
+    }
+}
+
+class Substraction extends Operation {
+    execute(value1, value2) {
+        return value1 - value2;
+    }
+}
+
+class Multiplication extends Operation {
+    execute(value1, value2) {
+        return value1 * value2;
+    }
+}
+
+class Division extends Operation {
+    execute(value1, value2) {
+        if (value2 === 0) throw new Error("División por 0 no está permitida");
+        return value1 / value2;
+    }
+}
+
+const Operations = {
+    '+': Addition,
+    '-': Substraction,
+    'X': Multiplication,
+    '÷': Division
+};
+
 class Calculator {
     constructor(display) {
         this.display = display;
@@ -62,17 +100,15 @@ class Calculator {
         '=': () => this.calculate(),
         '.': () => this.handleDecimalPoint()
     };
-    
+
     pressButton(value) {
         if (this.display.currentvalue === 'Error') this.clear();
-    
+
         const operation = this.operationsMap[value];
         if (operation) return operation();
-    
+
         return this.handleNumberInput(value);
     }
-    
-    
 
     handleNumberInput(value) {
         if (this.isNewInput) {
@@ -117,19 +153,19 @@ class Calculator {
 
     calculate() {
         if (!this.currentOperation || this.value1 === null) return;
-    
+
         this.value2 = parseFloat(this.display.currentvalue);
-    
+
         const result = this.tryExecuteOperation();
         this.display.update(result.toString());
-    
+
         if (result !== 'Error') this.value1 = result;
-    
+
         this.currentOperation = null;
         this.value2 = null;
         this.isNewInput = true;
     }
-    
+
     // Función auxiliar para ejecutar la operación con manejo de errores
     tryExecuteOperation() {
         try {
@@ -138,46 +174,9 @@ class Calculator {
             return 'Error';
         }
     }
-    
+
 }
 
-class Operation {
-    execute(value1, value2) {
-        throw new Error("Método abstracto execute() debe ser implementado");
-    }
-}
-
-class Addition extends Operation {
-    execute(value1, value2) {
-        return value1 + value2;
-    }
-}
-
-class Substraction extends Operation {
-    execute(value1, value2) {
-        return value1 - value2;
-    }
-}
-
-class Multiplication extends Operation {
-    execute(value1, value2) {
-        return value1 * value2;
-    }
-}
-
-class Division extends Operation {
-    execute(value1, value2) {
-        if (value2 === 0) throw new Error("División por 0 no está permitida");
-        return value1 / value2;
-    }
-}
-
-const Operations = {
-    '+': Addition,
-    '-': Substraction,
-    'X': Multiplication,
-    '÷': Division
-};
 document.addEventListener('DOMContentLoaded', () => {
     const calculatorInstance = new Calculator(new Display());
     const buttonElements = document.querySelectorAll('.button');

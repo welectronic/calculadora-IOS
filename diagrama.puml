@@ -1,0 +1,67 @@
+@startuml Calculadora
+skinparam classAttributeIconSize 0
+
+' Clases principales
+class Display {
+    - displayElement
+    - currentvalue
+    - maxLength
+    + update(value)
+    + render()
+    + clear()
+    + append(value)
+}
+
+class Button {
+    - element
+    - action
+    + init()
+    + onClick()
+}
+
+class Calculator {
+    - display
+    - currentOperation
+    - value1
+    - value2
+    - isNewInput
+    + pressButton(value)
+    + handleNumberInput(value)
+    + handleDecimalPoint()
+    + clear()
+    + toggleSign()
+    + percent()
+    + setOperation(operation)
+    + calculate()
+}
+
+class Operation {
+    + execute(value1, value2)
+}
+
+class Addition {
+    + execute(value1, value2)
+}
+
+class Substraction {
+    + execute(value1, value2)
+}
+
+class Multiplication {
+    + execute(value1, value2)
+}
+
+class Division {
+    + execute(value1, value2)
+}
+
+' Relaciones
+Calculator --> Display : utiliza
+Calculator --> Operation : utiliza
+Operation <|-- Addition : hereda
+Operation <|-- Substraction : hereda
+Operation <|-- Multiplication : hereda
+Operation <|-- Division : hereda
+Button --> Calculator : interactúa
+
+@enduml
