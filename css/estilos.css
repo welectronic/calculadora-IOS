@@ -21,7 +21,7 @@ body {
 }
 
 #calculator {
-    width: 340px;
+    width: 23rem;
     background-color: var(--background-color);
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -56,7 +56,10 @@ body {
     width: 78px;
     height: 78px;
     margin: 6px;
-    transition: filter 0.1s ease-out;
+    transition-property: filter;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
+    transition-delay: 0s;
 }
 
 .button.operation {
