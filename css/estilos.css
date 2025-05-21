@@ -1,6 +1,6 @@
 :root {
     --background-color: #000;
-    --display-bg-color: #333;
+    --display-bg-color: #000;
     --display-text-color: #fff;
     --button-bg-color: #505050;
     --button-text-color: #fff;
@@ -17,7 +17,7 @@ body {
     height: 100vh;
     background-color: var(--background-color);
     margin: 0;
-    font-family: 'Helvetica nue', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #calculator {
@@ -30,9 +30,10 @@ body {
 .display {
     background-color: var(--display-bg-color);
     color: var(--display-text-color);
-    font-size: 2.5em;
+    font-size: 4.5em;
     text-align: right;
     padding: 20px;
+    padding-right: 25px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
@@ -46,14 +47,15 @@ body {
 .button {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
-    font-size: 1.5em;
-    padding: 20px 0px;
+    font-size: 2em;
+    padding: 0;
     text-align: center;
     border: none;
     cursor: pointer;
     border-radius: 50%;
-    width: 70px;
-    margin: 8px;
+    width: 78px;
+    height: 78px;
+    margin: 6px;
 }
 
 .button.operation {
@@ -68,8 +70,8 @@ body {
 
 .button.zero {
     grid-column: span 2;
-    width:150px;
-    border-radius: 40px;
+    width: calc(2 * 78px + 2 * 6px + 1px);
+    border-radius: 39px;
     text-align: left;
     padding-left: 30px;
 }
@@ -79,5 +81,5 @@ body {
 }
 
 .button:active {
-    opacity: 0.6;
+    filter: brightness(80%);
 }
