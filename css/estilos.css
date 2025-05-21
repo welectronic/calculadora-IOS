@@ -1,7 +1,7 @@
 :root {
-    --background-color: #000;
-    --display-bg-color: #000;
-    --display-text-color: #fff;
+    --background-color: #e2e2e2;
+    --display-bg-color: var(--background-color);
+    --display-text-color: #000;
     --button-bg-color: #505050;
     --button-text-color: #fff;
     --button-special-bg-color: #a5a5a5;
@@ -56,6 +56,7 @@ body {
     width: 78px;
     height: 78px;
     margin: 6px;
+    transition: filter 0.1s ease-out;
 }
 
 .button.operation {
